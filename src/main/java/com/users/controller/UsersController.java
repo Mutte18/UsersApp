@@ -16,6 +16,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
 
+@CrossOrigin(origins = { "http://localhost:3000" })
 @RestController
 @RequestMapping("/api/")
 @Api(value = "Users REST Endpoint", tags = "Users Info")
@@ -29,8 +30,9 @@ public class UsersController {
     }
 
     @GetMapping("/users")
-    public List<UserRestModel> getUsers() {
-        return usersService.getUsers();
+    public ResponseEntity<List<UserRestModel>> getUsers() {
+
+        return ResponseEntity.ok().body(usersService.getUsers());
     }
 
     @GetMapping("/user/{id}")
