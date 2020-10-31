@@ -34,17 +34,15 @@ public class UsersServiceImpl implements UsersService {
 
     @Override
     public User updateUser(User newUser, Long id) {
-        return usersRepository.findById(id)
-                .map(user -> {
-                    user.setName(newUser.getName());
-                    user.setAge(newUser.getAge());
-                    user.setEmail(newUser.getEmail());
-                    return usersRepository.save(user);
-                })
-                .orElseGet(() -> {
-                    newUser.setId(id);
-                    return usersRepository.save(newUser);
-                });
+        return usersRepository.findById(id).map(user -> {
+            user.setName(newUser.getName());
+            user.setAge(newUser.getAge());
+            user.setEmail(newUser.getEmail());
+            return usersRepository.save(user);
+        }).orElseGet(() -> {
+            newUser.setId(id);
+            return usersRepository.save(newUser);
+        });
     }
 
     @Override

@@ -42,8 +42,7 @@ public class UsersController {
     public ResponseEntity<User> createUser(@RequestBody User user) throws URISyntaxException {
         log.info("Request to create user: {}", user);
         User result = usersService.createUser(user);
-        return ResponseEntity.created(new URI("/api/user/" + result.getId()))
-                .body(result);
+        return ResponseEntity.created(new URI("/api/user/" + result.getId())).body(result);
     }
 
     @PutMapping("/user/{id}")

@@ -27,8 +27,8 @@ public class UsersControllerIntegrationTest {
 
     @Test
     public void getUsers_withNoEntryInDB_ReturnsEmptyList() throws Exception {
-        var users = mockMvc.perform(get("/v1/users/")
-                .contentType("application/json")).andExpect(status().isOk()).andReturn();
+        var users = mockMvc.perform(get("/v1/users/").contentType("application/json")).andExpect(status().isOk())
+                .andReturn();
         String contentAsString = users.getResponse().getContentAsString();
         System.out.println(contentAsString);
 
