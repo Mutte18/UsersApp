@@ -27,7 +27,8 @@ public class UsersServiceImpl implements UsersService {
         return usersRepository.findById(id);
     }
 
-    public User saveUser(User newUser) {
+    @Override
+    public User createUser(User newUser) {
         return usersRepository.save(newUser);
     }
 
