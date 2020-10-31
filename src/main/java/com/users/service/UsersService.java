@@ -1,18 +1,19 @@
 package com.users.service;
 
 import com.users.model.User;
+import com.users.model.UserRestModel;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface UsersService {
-    List<User> getUsers();
+    List<UserRestModel> getUsers();
 
-    Optional<User> getUserById(Long id);
+    Optional<UserRestModel> getUserById(Long id);
 
-    User createUser(User user);
+    UserRestModel createUser(UserRestModel user);
 
-    User updateUser(User user, Long id);
+    UserRestModel updateUser(UserRestModel user, Long id);
 
     void deleteUser(Long id);
 }

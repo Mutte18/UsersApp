@@ -1,6 +1,8 @@
 package com.users.controller;
 
+import com.users.exception.UserNotFoundException;
 import com.users.model.User;
+import com.users.model.UserRestModel;
 import com.users.service.UsersService;
 import io.swagger.annotations.Api;
 import org.slf4j.Logger;
@@ -27,35 +29,46 @@ public class UsersController {
     }
 
     @GetMapping("/users")
-    public List<User> getUsers() {
+    public List<UserRestModel> getUsers() {
         return usersService.getUsers();
     }
 
     @GetMapping("/user/{id}")
     public ResponseEntity<?> getUserById(@PathVariable Long id) {
-        Optional<User> user = usersService.getUserById(id);
-        return user.map(response -> ResponseEntity.ok().body(response))
-                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        try {
+            Optional<UserRestModel> user = usersService.getUserById(id);
+            return ResponseEntity.ok().body(user);
+        } catch (UserNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @PostMapping("/user")
-    public ResponseEntity<User> createUser(@RequestBody User user) throws URISyntaxException {
+    public ResponseEntity<UserRestModel> createUser(@RequestBody UserRestModel user) throws URISyntaxException {
         log.info("Request to create user: {}", user);
-        User result = usersService.createUser(user);
+        UserRestModel result = usersService.createUser(user);
         return ResponseEntity.created(new URI("/api/user/" + result.getId())).body(result);
     }
 
     @PutMapping("/user/{id}")
-    public ResponseEntity<User> updateUser(@RequestBody User user, @PathVariable Long id) {
-        log.info("Request to update user: {}", user);
-        User result = usersService.updateUser(user, id);
-        return ResponseEntity.ok().body(result);
+    public ResponseEntity<UserRestModel> updateUser(@RequestBody UserRestModel user, @PathVariable Long id) {
+        try {
+            log.info("Request to update user: {}", user);
+            UserRestModel result = usersService.updateUser(user, id);
+            return ResponseEntity.ok().body(result);
+        } catch (UserNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @DeleteMapping("/user/{id}")
     public ResponseEntity<?> deleteUser(@PathVariable Long id) {
-        log.info("Request to delete user: {}", id);
-        usersService.deleteUser(id);
-        return ResponseEntity.ok().build();
+        try {
+            log.info("Request to delete user: {}", id);
+            usersService.deleteUser(id);
+            return new ResponseEntity<>(HttpStatus.ACCEPTED);
+        } catch (UserNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 }

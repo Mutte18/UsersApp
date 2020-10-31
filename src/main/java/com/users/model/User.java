@@ -1,25 +1,26 @@
 package com.users.model;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
-import lombok.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.Objects;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
 @Entity
 @Table(name = "users")
 public class User {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;
     private String name;
     private String email;
     private Integer age;
+
+    public User(UserRestModel userRestModel) {
+        this.name = userRestModel.getName();
+        this.email = userRestModel.getEmail();
+        this.age = userRestModel.getAge();
+    }
 }
