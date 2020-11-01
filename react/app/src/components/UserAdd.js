@@ -39,7 +39,6 @@ export default class UserAdd extends Component {
 	}
 
 	saveUser() {
-		console.log(this, "SAVEUSER");
 		let data = {
 			name: this.state.name,
 			email: this.state.email,
