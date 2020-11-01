@@ -76,7 +76,7 @@ export default class UserList extends Component {
 				<div className="col-md-6">
 					{currentUser ? (
 						<div>
-							<h4>User</h4>
+							<h4>User #{currentUser.id}</h4>
 							<div>
 								<label>
 									<strong>Name:</strong>

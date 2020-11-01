@@ -114,7 +114,7 @@ export default class UserEdit extends Component {
 			<div>
 				{currentUser ? (
 					<div className="edit-form">
-						<h4>User</h4>
+						<h4>Edit User</h4>
 						<form>
 							<div className="form-group">
 								<label htmlFor="name">Name</label>
