@@ -86,7 +86,7 @@ export default class UserAdd extends Component {
 					</div>
 				) : (
 					<div>
-						<h1>Add User</h1>
+						<h4>Add User</h4>
 						<div className="form-group">
 							<label htmlFor="title">Name</label>
 							<input
