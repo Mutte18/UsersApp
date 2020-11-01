@@ -21,7 +21,7 @@ class CourseDataService {
 	}
 
 	createUser(user) {
-		return axios.put(`${USER_API_URL}/user/`, user)
+		return axios.post(`${USER_API_URL}/user/`, user)
 	}
 }
 

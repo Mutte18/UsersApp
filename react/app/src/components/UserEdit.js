@@ -1,119 +1,176 @@
-import React, { Component } from 'react';
-import { Container, Form, FormGroup, Input, Label } from 'reactstrap';
+import React, { Component } from "react";
 import UserDataService from "../service/UserDataService";
-import {ErrorMessage, Field, Formik} from "formik";
 
-class UserEdit extends Component {
+export default class UserEdit extends Component {
 	constructor(props) {
-		super(props)
+		super(props);
+		this.onChangeName = this.onChangeName.bind(this);
+		this.onChangeEmail = this.onChangeEmail.bind(this);
+		this.onChangeAge = this.onChangeAge.bind(this);
+		this.getUser = this.getUser.bind(this);
+		this.updateUser = this.updateUser.bind(this);
+		this.deleteUser = this.deleteUser.bind(this);
 
 		this.state = {
-			id: this.props.match.params.id,
-			name: '',
-			email: '',
-			age: ''
+			currentUser: {
+				id: null,
+				name: "",
+				email: "",
+				age: false
+			},
+			message: ""
 		};
-
-		this.onSubmit = this.onSubmit.bind(this);
-		this.validate = this.validate.bind(this)
-
-
-	}
-
-	onSubmit(values) {
-		let user = {
-			id: this.state.id,
-			name: values.name,
-			email: values.name,
-			age: values.age
-		};
-
-		if (this.state.id === -1) {
-			UserDataService.createUser(user)
-				.then(() => this.props.history.push('/users'))
-		} else {
-			UserDataService.updateUser(this.state.id, user)
-				.then(() => this.props.history.push('/users'))
-		}
-	}
-
-	validate(values) {
-		console.log(values, "hej validate");
-		console.log(values.name);
-		let errors = {};
-		if (!values.name || values.name === '') {
-			errors.name = 'Enter a name'
-		} else if (values.name.length < 2) {
-			errors.name = 'Enter a name longer than 2 characters!'
-		}
-		console.log(errors, "errors");
-		return errors
 	}
 
 	componentDidMount() {
-		if (this.state.id == -1) {
-			return
-		}
+		this.getUser(this.props.match.params.id);
+	}
 
+	onChangeName(e) {
+		const name = e.target.value;
 
+		this.setState(function(prevState) {
+			return {
+				currentUser: {
+					...prevState.currentUser,
+					name: name
+				}
+			};
+		});
+	}
 
-		UserDataService.getUser(this.state.id)
-			.then(response => this.setState({
-				name: response.data.name,
-				email: response.data.email,
-				age: response.data.age,
-			}))
+	onChangeEmail(e) {
+		const email = e.target.value;
+
+		this.setState(prevState => ({
+			currentUser: {
+				...prevState.currentUser,
+				email: email
+			}
+		}));
+	}
+
+	onChangeAge(e) {
+		const age = e.target.value;
+
+		this.setState(prevState => ({
+			currentUser: {
+				...prevState.currentUser,
+				age: age
+			}
+		}));
+	}
+
+	getUser(id) {
+		UserDataService.getUser(id)
+			.then(response => {
+				this.setState({
+					currentUser: response.data
+				});
+				console.log(response.data);
+			})
+			.catch(e => {
+				console.log(e);
+			});
+	}
+
+	updateUser() {
+		let data = {
+			id: this.state.currentUser.id,
+			name: this.state.currentUser.name,
+			email: this.state.currentUser.email,
+			age: this.state.currentUser.age,
+		};
+
+		UserDataService.updateUser(this.state.currentUser.id, data)
+			.then(response => {
+				this.setState(prevState => ({
+					currentUser: {
+						...prevState.currentUser,
+					}
+				}));
+				console.log(response.data);
+			})
+			.catch(e => {
+				console.log(e);
+			});
+	}
+
+	deleteUser() {
+		UserDataService.deleteUser(this.state.currentUser.id)
+			.then(response => {
+				console.log(response.data);
+				this.props.history.push('/users')
+			})
+			.catch(e => {
+				console.log(e);
+			});
 	}
 
 	render() {
-		let {id, name, email, age} = this.state;
-		console.log(id, name, email, age);
+		const { currentUser } = this.state;
+
 		return (
 			<div>
-				<h3>Course</h3>
-				<div className="container">
-					<Formik initialValues={{
-						id: id,
-						name: name,
-						email: email,
-						age: age }}
-						enableReinitialize={true}
-			      onSubmit={this.onSubmit}
-            validateOnChange={true}
-            validateOnBlur={true}
-            validate={this.validate}
-					>
-						{
-							(props
-							) => (
-								<Form>
-									<ErrorMessage name="description" component="div"
-									              className="alert alert-warning" />
-									<fieldset className="form-group">
-										<label>Id</label>
-										<Field className="form-control" type="text" name="id" disabled/>
-									</fieldset>
-									<fieldset className="form-group">
-										<label>Name</label>
-										<Field className="form-control" type="text" name="name"/>
-									</fieldset>
-									<fieldset className="form-group">
-										<label>Email</label>
-										<Field className="form-control" type="text" name="email"/>
-									</fieldset>
-									<fieldset className="form-group">
-										<label>Age</label>
-										<Field className="form-control" type="number" name="age"/>
-									</fieldset>
-									<button className="btn btn-success" type="submit">Save</button>
-								</Form>
-							)
-						}
-					</Formik>
-				</div>
+				{currentUser ? (
+					<div className="edit-form">
+						<h4>User</h4>
+						<form>
+							<div className="form-group">
+								<label htmlFor="name">Name</label>
+								<input
+									type="text"
+									className="form-control"
+									id="name"
+									value={currentUser.name}
+									onChange={this.onChangeName}
+								/>
+							</div>
+							<div className="form-group">
+								<label htmlFor="email">Email</label>
+								<input
+									type="text"
+									className="form-control"
+									id="email"
+									value={currentUser.email}
+									onChange={this.onChangeEmail}
+								/>
+							</div>
+							<div className="form-group">
+								<label htmlFor="age">Age</label>
+								<input
+									type="text"
+									className="form-control"
+									id="age"
+									value={currentUser.age}
+									onChange={this.onChangeAge}
+								/>
+							</div>
+						</form>
+
+						<button
+							className="badge badge-danger mr-2"
+							onClick={this.deleteUser}
+						>
+							Delete
+						</button>
+
+						<button
+							type="submit"
+							className="badge badge-success"
+							onClick={this.updateUser}
+						>
+							Update
+						</button>
+						<p>{this.state.message}</p>
+					</div>
+				) : (
+					<div>
+						<br />
+						<p>Please click on a User...</p>
+					</div>
+				)}
 			</div>
-		)
+		);
 	}
 }
-
-export default UserEdit;
