@@ -15,7 +15,7 @@ Java backend is available at localhost:8080 - To to swagger-ui to see endpoints:
 3. Inside the edit screen of the user, you can update the fields. Or delete the user.
 ![Screenshot](./demo-screenshots/editUser.png)
 4. Inside the Add new User screen, you can add a new user
-![Screenshot](./demo-screenshots/addNewUser.png)
+![Screenshot](./demo-screenshots/addUser.png)
 5. Screen once you have successfully added a new user
 ![Screenshot](./demo-screenshots/userAdded.png)
 6. Screenshot of the user interface of the backend endpoints
